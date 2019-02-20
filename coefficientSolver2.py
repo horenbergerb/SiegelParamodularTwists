@@ -61,17 +61,18 @@ def reduce(bqf):
     newB = bqf[1]
     newC = bqf[2]
     if newA > newC:
-        newC = -1*bqf[0]
+        newC = bqf[0]
         newA = bqf[2]
         newB = newB*-1
     if(abs(newB) > newA):
-        nextB = newB
-        while abs(nextB) <= abs(newB) and nextB != 0:
-            newB = nextB
-            nextB = nextB - (nextB/abs(nextB))*abs(2*newA)
-            print(str(newB) + " " + str(nextB))
-        if(abs(nextB) < abs(newB)):
-            newB = nextB
+        while newB != 0 and (abs(newB) > abs(newB - (newB/abs(newB))*abs(2*newA)) or ((abs(newB) == newA) and newB < 0)):
+            newC = newA-(newB/abs(newB))*(newA/abs(newA))*newB+newC
+            newB = newB - (newB/abs(newB))*abs(2*newA)
+            if newA > newC or (newA == newC and newB < 0):
+                newCHolder = newC
+                newC = newA
+                newA = newCHolder
+                newB = newB*-1
     return [newA, newB, newC]
 
 def legendre(input, p):
@@ -94,10 +95,12 @@ def case1Inverse(bqf, p, b):
     return newBQF
 
 def case1(Sprime, Scoeffs):
-    denominator = p**(1-weight)
-    numerator = legendre(S[1])
-    for b in range(0, chosenPrime):
-        numerator = numerator + legendre(b)*Scoeffs[b]
+    print(Sprime)
+    print(Scoeffs)
+    denominator = legendre(Sprime[1], chosenPrime)*chosenPrime**(weight-1)
+    numerator = 0
+    for b in range(1, chosenPrime):
+        numerator = numerator + legendre(b, chosenPrime)*Scoeffs[b-1][3]
     #calculates the coefficient corresponding to some S'
     #NOTE: Need to access the respective S coefficients somehow!!
     print(str(numerator) + "/" + str(denominator))
@@ -133,27 +136,39 @@ def findCase1SPrime(disc):
 
 def testSValues():
 
-    weight = int(data["weight"])
-
     for disc in data["Fourier_coefficients"]:
-        discVal = int(disc)*-1
-        #case1 check to find bqs
-        possibleSolutions = findCase1SPrime(discVal)
-        reducedSol = [[0,0,0]]*(chosenPrime-1)
-        for solution in possibleSolutions:
-            if(len(solution) == chosenPrime):
-                print("Discriminant: " + str(discVal))
-                print(solution)
-            for bqf in solution[1:]:
-                reducedSol[bqf[1]-1] = reduce(bqf[0])
-            print(reducedSol)
+
         #load up our bqfs from this discriminant
+        coefficientSet = []
         for BQF in data["Fourier_coefficients"][disc]:
             #print(bqf)
             cleanedBQF = BQF.strip('()').replace(" ", "")
-            reducedReference = cleanedBQF.split(",")
+            coefficientSet.append([list(map(int, cleanedBQF.split(","))), int(data["Fourier_coefficients"][disc][BQF])])
+
+        discVal = int(disc)*-1
+
+        #case1 check to find bqs
+        possibleSolutions = findCase1SPrime(discVal)
+        if(possibleSolutions != []):
+            print(possibleSolutions)
+        for solution in possibleSolutions:
+            reducedSol = [[0,0,0]]*(chosenPrime-1)
+            if(len(solution) == chosenPrime):
+                print("Discriminant: " + str(discVal))
+                print(solution)
+                for bqf in solution[1:]:
+                    reducedSol[bqf[1]-1] = reduce(bqf[0])
+                print(reducedSol)
+            for x in range(len(reducedSol)):
+                for y in range(len(coefficientSet)):
+                    if reducedSol[x] == coefficientSet[y][0]:
+                        reducedSol[x].append(coefficientSet[y][1])
+                        break
+            if([0,0,0] not in reducedSol):
+                case1(solution[0], reducedSol)
             #here we can retrieve coefficients from the old form by comparing values
             #to our reduced bqfs which we should have calculated above
 
 data = readJSON()
+weight = int(data["weight"])
 testSValues()
