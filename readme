@@ -1,0 +1,12 @@
+This is a collection of resources created by Beau Horenberger and Kirk Bonney for research on Siegel Paramodular forms under the guidance of Dr. Jennifer Johnson-Leung. The goal of this project is to compute coefficients of Siegel paramodular forms of weight 2 using a paper by Dr. Jennifer Johnson-Leung and Dr. Brooks Roberts.
+
+In ComputationalAlgorithms, you will find a collection of programs which attempt to implement the process described in that paper. Some programs will attempt the whole process, and some are sub-algorithms based on smaller theoretical components of the process.
+
+Goals:
+  ASAP:
+    Link all algorithms in the above folder to respective resources in the overview pdf (for clarity)
+  Soon:
+    Implement the representative calculator for arbitrary levels of the congruence subgroup (use projective plane)
+    Create clear algorithm descriptions in the overview pdf
+  Eventually:
+    Create a complete coefficient calculator for case one of the paper's five cases
