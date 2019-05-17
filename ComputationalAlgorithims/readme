@@ -1,0 +1,3 @@
+CoefficientSolver and CoefficientSolver2 are programs designed to calculate coefficients for Siegel paramodular forms of the simplest kind: Siegel Paramodular forms of the lowest level (N=1). This system is functional, but has not implemented all of the theory available to us now. It does not have a guarantee of terminating or finding all of the coefficients, even for paramodular forms of level N=1.
+
+However, it is a strong code base for modeling future solutions.

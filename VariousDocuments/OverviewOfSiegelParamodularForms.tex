@@ -1,0 +1,409 @@
+\documentclass[11pt, oneside]{amsart}
+\usepackage{geometry, fullpage}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}	
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{algorithm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[noend]{algpseudocode}
+\usepackage{float}
+\usepackage{hyperref}
+			% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex		
+\usepackage{amssymb}
+\usepackage{color}
+\usepackage[normalem]{ulem}
+
+%SetFonts
+
+%SetFonts
+
+
+\title{Introduction to Calculating Fourier Coefficients of Siegel Paramodular Forms}
+\author{Beau Horenberger}
+%\date{}							% Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Helpful Preparatory Topics}
+Although I do not have the time, willpower, or ability to create a comprehensive introduction to the math concepts prerequisite to Siegel modular forms, I believe it is helpful to know approximately how one might bridge Siegel modular forms back to undergraduate knowledge. Thus, this is simply a summary of what fields may help provide understanding for a determined undergraduate.\\
+A familiarity with linear algebra will massively prepare a new student for interpreting the works regarding Siegel modular forms. Most of the spaces are matrix spaces, and those that are not can probably be rephrased as such. Becoming familiar with intuition for matrix multiplication is valuable. Further, understanding why a symmetric matrix is unique, or understanding what $SL_2(\mathbb{Z})$ represents are all incredibly useful. Be familiar with the intuition of a determinant. All this knowledge can be covered with an introductory linear algebra course and a little hands-on experimentation. Additionally, many processes of classifying mathematical objects involve grouping them in "spaces" which are covered in higher linear algebra, such as Hilbert spaces (\textbf{Tip}: if a function is in an infinite-dimensional space, you can imagine its Fourier expansion as the expression of the function in terms of its basis vectors).\\
+Many processes in this paper are explained through the lense of abstract algebra. Particularly, you may notice we treat domains as groups and observe subgroups of the domain. We then use those subgroups as "group actions," which is a very common application of abstract algebra. There are also a few isomorphisms commonly used when discussing Siegel modular forms that could confuse the unacquainted, so be alert for such things. Introductory abstract algebra is useful for understanding what it means to pick "discrete subgroups" as group actions, or for understanding much of the classification that texbooks describe usually means organizing objects into a group.\\
+Number theory methods are incredibly useful for work with binary quadratic forms, which is fundamental to the goal of this research. One should be comfortable with talking about divisibility and have worked through a few classic number theory proofs. It may be valuable to review sources particularly on equivalence of binary quadratic forms, such as "Primes of the Form $x^2+ny^2$", but this is not strictly necessary since we use only rudimentary notions of equivalence among binary quadratic forms.\\
+Finally, real and complex analysis will be very valuable for understanding the motivation behind much of the work in this field. Analysis helps us describe functions which are "nice," or which can be worked with using the tools available to us. Fundamentally, we're interested in some "nice" functions which still have an interesting structure, which is why we've found Siegel modular forms. Understanding real and complex analysis on an introductory level will help readers understand why we've constructed Siegel modular forms with many weirdly specific properties, many of which just establish "niceness" so we can use analytic tools. This will help readers understand how we've worked up to the Fourier expansion on which this paper is focusing. This also means that analysis is not strictly necessary for crunching results. However, it is highly recommended for anyone who wants to have a stronger understanding of the field. Introductory real analysis is the best starting point. From here, explore how these topics generalize to more dimensions, then observe how drastically things change in complex analysis. Particularly, domains of convergence and the use of periodicity are valuable. Understand the meaning of the word "holomorphic."\\
+Lastly, be prepared for a very long, slow, and rewarding accumulation of knowledge on this journey. Having the knowledge to understand Siegel modular forms opens the door for many other mathematical pursuits as well.
+\section{Prerequisite Discussion}
+This section only briefly reviews fundamentals in order to define the most important keywords when dealing with Siegel modular forms. Knowledge here is expected to be supplemented with external education of the basics.
+\subsection{Abstract Algebra and Group Actions}
+Recall that a \textbf{group} is an ordered pair $(G, *)$ where $G$ is a set and $*$ is a binary operation on G which satisfies the following:
+\begin{enumerate}
+\item $*$ is associative
+\item There exists $e\in G$ such that for all $a\in G$, $a*e=e*a=a$. $e$ is the \textbf{identity}.
+\item For all $a\in G$, there exists $a^{-1}\in G$ such that $a*a^{-1}=a^{-1}*a=e$
+\end{enumerate}
+
+It is recommended one become familiar with groups and subgroups.\\
+With that, a \textbf{group action} of a group $(G, *)$ on a set $A$ can be considered as a map from $G\times A \rightarrow A$, which is denoted $ga$, $g\in G, a\in A$ which satisfies the following:
+\begin{enumerate}
+\item $g_1(g_2a)=(g_1*g_2)a$
+\item $1a=a$ for all $a\in A$
+\end{enumerate}
+This is a very broad way of describing "using" a group on another set. One may also interpret a group action as a set of functions:
+$$S_{G} = \{\sigma_{g}(a)\vert\: g\in G,\:\sigma_{g}: A\rightarrow A,\:\sigma_{g}(a)=ga\}$$
+Which is the set of transformations (or \textbf{permutations} AKA bijective mappings) imposed $A$ by each $g\in G$. Conveniently, these group actions are permutations and the map $G\rightarrow S_a$, $g\mapsto \sigma_g$ is a homomorphism, so we have an isometry, or preserved group structure. This is nice because it means actions of $G$ on $A$ still behave like the group $G$.\\
+One relevant example of a group action would be the group $SL_2(\mathbb{Z})$ acting on $\mathbb{C}$, with the action $$ \frac{\alpha z + \beta}{\gamma z + \delta}
+\text{ for } \begin{bmatrix}
+
+\alpha &	\beta \\
+\gamma & \delta
+
+\end{bmatrix} \in SL_2(\mathbb{Z})\text{ and } z\in \mathbb{C}$$
+It may be worth verifying this is a group action and exploring the consequences.\\
+According to Dummit and Foote, "It is an important and recurring idea in mathematics that when one object acts on another then much information can be obtained on both. As more structure is added to the set on which the group acts... more information on the structure of the group becomes available... The action... is one of the fundamental unifying themes in the text." We should bear this in mind when working with Siegel modular forms.\\
+\subsection{Lie Groups}
+To speak specifically of the group actions we will be experiencing, $SL_2(\mathbb{Z})$ and $\Gamma_0(N)$ are lie groups, or groups of transformations which determine the properties of a space. According to one source, "Informally, a Lie group is a group of symmetries where the symmetries are continuous. A circle has a continuous group of symmetries: you can rotate the circle an arbitrarily small amount and it looks the same. This is in contrast to the hexagon, for example. If you rotate the hexagon by a small amount then it will look different. Only rotations that are multiples of one-sixth of a full turn are symmetries of a hexagon." (https://www.aimath.org/e8/liegroup.html) So the "Group" part of the name means there is an additive operation with group properties on the set of transformations, and the "Lie" part means these transformations get arbitrarily small.\\
+According to Wikipedia, "A \textbf{real Lie group} is a group that is also a finite-dimensional real smooth manifold, in which the group operations of multiplication and inversion are smooth maps."\\
+\textbf{Tip:} In modular forms, one can imagine our domain as a sphere,  and transformations from $SL_2(\mathbb{R})$ are rotations of the sphere. More interestingly, $SL_2(\mathbb{Z})$ rotates our points very explicitly, and the transformation \[\begin{bmatrix}
+
+1 &	1 \\
+0 & 1
+\end{bmatrix}
+\] fixes all of the points in the domain, as we will see.
+\subsection{Complex Analysis Overview}
+Complex analysis is not an area in which I have training, so this section will be sparse, attempting only to motivate the linkage between complex analysis and Siegel modular forms as well as define critical terms.\\
+Firstly, we consider the complex numbers $\mathbb{C}$ as the field satisfying
+\begin{enumerate}
+\item $\mathbb{R} \subset \mathbb{C}$
+\item $X^2+1=0$ has two solutions in $\mathbb{C}$, $i$ and $-i$
+\item The map $\mathbb{R}\times \mathbb{R} \rightarrow \mathbb{C}$ defined as $(x,y)\mapsto x+iy$ is a bijection.
+\end{enumerate}
+There are many interpretations of $\mathbb{C}$. I recommend you consider them to build an intuition.\\
+Members of $\mathbb{C}$ have the following operations
+\begin{enumerate}
+\item $(x_1+y_1i) + (x_2+y_2i) = (x_1+x_2) + (y_1+y_2)i$
+\item $(x_1+y_1i)*(x_2+y_2i)=(x_1x_2-y_1y_2)+(x_1y_2+y_1x_2)i$
+\end{enumerate}
+Recall $\mathbb{C}$ is a field and thus has much structure. Become familiar with this.\\
+
+Define the \textbf{conjugate} of a complex number, $a+bi$, as $a-bi$. Then the $\textbf{modulus}$ $\vert z \vert$, which one can imagine as the "length" of a complex value in 2-D space, is $$\sqrt{z\bar{z}}= \sqrt{a^2+b^2}$$
+$\mathbb{C}$ satisfies many interesting geometrical properties useful in analysis. Indeed, it is common to interpret $\mathbb{C}$ geometrically, and this intuition will be useful in the discussion of Ellipses and Siegel modular forms. However, these properties are left to the reader, with sources provided.\\
+To those familiar with analysis, one may note complex analysis seems to "clean up" many aspects of real analysis. Domains of convergence are neater, and one can derive many important values quickly.\\
+
+Continuity fundamentally uses the same $\epsilon-\delta$ methodology as real analysis with a modified measure.\\
+One finds that real differentiability is a subset of complex differentiability.\\
+A\textbf{ holomorphic} function is complex differentiable at every point in its domain, which is some open subset of $\mathbb{C}$. This is also called being "analytic."\\
+
+Further, a function is \textbf{meromorphic} if it is holomorphic at all but a countable set of points.
+
+\section{Motivation and Intuition for Modular Forms}
+Creating an intuition for the environment in which modular forms exist is very difficult. Because modular forms have been discovered and viewed from many perspectives, a historical approach can be disorienting. Because of this, I have decided to motivate the intuitive understanding of modular forms from the perspective of the modularity theorem and paramodular conjecture. What this means is that I motivate modular forms as follows:\\
+Elliptic functions and classic modular curves are both valuable and uniquely motivated objects in mathematics. However, it has been observed in the past that there were striking similarities between their behaviors. Researchers thus conjectured and attempted to prove that these objects are identical by creating a mapping between them. According to Wikipedia, the \textbf{modularity theorem} states "any elliptic curve over $\mathbb{Q}$, can be obtained via a rational map with integer coefficients from the classic modular curve, $X_{0}(N)$, for some integer $N$." These rational maps with integer coefficients are called \textbf{a modular parameterization of level N}. It was discovered the parameterizations with the smallest level $N$ (called the conductor) were exactly the modular forms of level N with weight 2. Ongoing research involves creating even more general mappings between more general objects using Siegel paramodular forms.
+\section{A Brief Description of Modular Curves}
+
+\section{Elliptic Functions and Lattices}
+Loosely, elliptic functions are complex functions with two directions along which periods occur. They are a generalization of periodicity. More formally, we call an \textbf{elliptic function} one which is meromorphic and has values $\omega_1, \omega_2 \in \mathbb{C}$ such that $\frac{\omega_1}{\omega_2} \not\in \mathbb{R}$ and $f(z+\omega_1) =f(z+\omega_2)=f(z)$ for all $z\in \mathbb{C}$.\\
+One useful tool when dealing with elliptic functions is lattices. a \textbf{lattice} with respect to periods $\omega_1, \omega_2$ is a subgroup $\Lambda=\left\{m \omega_{1}+n \omega_{2} | m, n \in \mathbb{Z}\right\}$. Conveniently, for all $z\in\mathbb{C}$, if we have  $z_1,z_2\in z\Lambda$, then it follows that $f(z)=f(z_1)=f(z_2)$.\\
+
+Elliptic functions can be constructed from an arbitrary lattice using various methods. The most popular is Weierstrauss's method, $$\wp(z)=\frac{1}{z^{2}}+\sum_{\omega \in \Lambda \backslash\{0\}}\left(\frac{1}{(z-\omega)^{2}}-\frac{1}{\omega^{2}}\right)$$
+\textbf{Take note:} Modular forms are a function on the set of lattices $\Lambda_{\tau}=\{\alpha m + \tau n \vert m,n\in \mathbb{Z}\}$ for $\tau\in \mathbb{C}$ which maps to the complex plane. Typically, we input one period, i.e. $f(\tau)$ while $\alpha$ remains constant.\\
+We are describing a function which "moves through" elliptic curves, adding a very rich structure to modular forms. Additionally,  note $$\{\Lambda\omega_{1}+\Lambda\omega_2\}=\{\Lambda(a \omega_{1}+b \omega_{2})+\Lambda(c \omega_{1}+d \omega_{2})\}$$ whenever \[
+\begin{bmatrix}
+
+\alpha &	\beta \\
+\gamma & \delta
+
+\end{bmatrix}
+\in SL_2(\mathbb{Z})
+\]
+
+So modular forms ought to be invariant on $SL_2(\mathbb{Z})$\\
+Modular forms turn out to be "related to" elliptic functions via the Modularity theorem, which is an incredibly relevant modern proof. In the vaguest possible explanation, the classical modular curve can be mapped to an elliptic curve via the use of a modular form. This "ties together" the appearances of periodicity in complex analysis. The paramodular conjecture is a modern variant of this, and closely related to the work of Dr. Jennifer Johnson-Leung.
+
+\section{Automorphic Forms, Particularly The Modular Ones}
+\textbf{Automorphic forms} are functions from some domain (a topological group) to the complex plane which satisfy an invariance under some \textbf{action} which uses a discrete subgroup of the domain. A simple example is $f:\mathbb{R}\rightarrow\mathbb{C}$, $f(x)=sin(x)$, which satisfies the invariance $sin(x+k2\pi)=sin(x), k\in\mathbb{Z}$ where $2\pi$ is the period. Intuitively, this means that the set of actions which shift the function by a multiple of the period don't change the function at all. Our discrete subgroup of the group action is $(2\pi)\mathbb{Z}$. However, automorphic forms are more general than this equivalence. The \textbf{invariance} (also called the factor of automorphy) only needs to be of the form $f(g.x) = j_g(x)*f(x)$, with $a.b$ the group action, where $j_g(x)$ is everywhere holomorphic and nonzero. Cases with complete equality like $sin(x)$ (in which case $j_g(x)$ is the identity) are called \textbf{automorphic functions} and are a subset of all automorphic forms.
+\\
+Modular forms are a kind of automorphic form with the domain of the complex upper-half plane and an action on the discrete subgroup called the modular group. Note, according to Wikipedia, the upper-half plane "is the domain of many functions of interest in complex analysis, especially modular forms. The lower half-plane, defined by y < 0, is equally good, but less used by convention." The decision to "slice the space in half" is also for simplicity. The \textbf{modular group}, $\Gamma$, is a group of transformations of the complex upper half plane onto itself. It is the set of matrices, $M$, corresponding to mappings as follows:
+\[
+M=
+\begin{bmatrix}
+
+\alpha &	\beta \\
+\gamma & \delta
+
+\end{bmatrix}
+\]
+$$\text{where }\alpha\delta-\gamma\beta=1$$
+
+\[
+z \mapsto \frac{\alpha z + \beta}{\gamma z + \delta}
+\]
+
+The operation on the group of actions is composition. Remember that the set of these matrices is isomorphic to a subset of the complex upper-half plane, and is thus an action! However, we usually call it $SL(2, \mathbb{Z})$. For references on the modular group, see \cite{Stein}.
+
+With that, a \textbf{modular form} of weight $k$ is a function $f$ on the upper-half plane, $H$, satisfying three conditions:
+
+\begin{enumerate}
+	\item $f$ is holomorphic (and thus infinitely differentiable) on $H$
+	\item $\forall z \in H$ and for all matrices in $SL(2, \mathbb{Z})$,
+	$$f\left( \frac{\alpha z + \beta}{\gamma z + \delta} \right) = (cz+d)^k f(z)$$
+	\item f is holomorphic as $z\rightarrow i\infty$
+\end{enumerate}
+It is important to note that modular forms are periodic, since $\forall z \in H$,
+	$$f\left( \frac{1 z + 1}{0 z + 1} \right) = f(z)$$
+It follows from the above properties that modular forms have Fourier expansions, which can be very useful when analyzing properties of a function.\\
+\textbf{Tip}: Automorphic forms look at discrete subsets of Lie groups generally, while modular forms relate to the discrete subgroup $SL_2(\mathbb{Z})$ of $SL_2(\mathbb{R})$.
+Bear in mind that modular forms are a function on sets of lattices for elliptic curves, which motivates many of these properties. Invariance with regard to group actions from $SL_2(\mathbb{Z})$ occurs because the lattices before and after the transformation contain values which map to the same output.
+Some of the early goals of research in this field were explaining behaviors of elliptic functions, but it was later realized that classifying automorphic functions was valuable in and of itself because of the elaborate structure. Recently, the modularity theorem which tied modular forms to elliptic curves was used in solving Fermat's last theorem.\\
+Though I can't argue that the study of automorphic forms is interesting, one may note their strange prevalence in mathematics after a quick Google search. Further, and more abstractly, automorphic forms are fascinating for their ability to express relations in a very elaborate way, and in a complex and interrelated world, we can't help but wonder whether we may find a use for them some day.
+
+\subsection{Constructing Modular Forms}
+A simple example of a modular form is the \textbf{Eisenstein series}. let $k>2$ be an even integer, then $$G_{2 k}(\tau)=\sum_{(m, n) \in \mathbb{Z}^{2} \backslash(0,0)} \frac{1}{(m+n \tau)^{2 k}}$$ is a modular form of weight $k$. You can verify the conditions of a modular form apply. This series is known to converge absolutely to a holomorphic function in the upper half plane. It has a Fourier expansion that can be extended.\\
+The Fourier expansions look very complicated involves strange mathematical objects. See Wikipedia for more information.\\
+There are, many other methods of constructing modular forms, which may be worth exploring.
+
+\subsection{Computational Example}
+
+\section{Siegel Modular Forms}
+\subsection{Domain and Group Action}
+Siegel modular forms are one kind of generalization of modular forms. The domain is the \textbf{Siegel upper half space}, $$\mathcal{H}_{g}=\left\{\tau \in M_{g \times g}(\mathbb{C}) | \tau^{\mathrm{T}}=\tau, \operatorname{Im}(\tau) \text { positive definite }\right\}$$ which is essentially a symmetric matrix form for a multivariable complex upper half plane. There is obvious distinguishing structure to this from typical multivariable representation. The domain allows us to define the subgroup the action is on, $$\Gamma_{g}(N)=\left\{\gamma \in G L_{2 g}(\mathbb{Z}) | \gamma^{\mathrm{T}} \left( \begin{array}{cc}{0} & {I_{g}} \\ {-I_{g}} & {0}\end{array}\right) \gamma=\left( \begin{array}{cc}{0} & {I_{g}} \\ {-I_{g}} & {0}\end{array}\right), \gamma \equiv I_{2 g} \quad \bmod N\right\}$$ which is a discrete subgroup of $\mathcal{H}_{g}$. $\Gamma_{g}(N)$ is called the \textbf{symplectic group} of level N. The symplectic group is a linear transformation in 2n-dimensional vector space. It also preserves non-degenerate, skew-symmetric, bilinear forms. Note that when $n=1$ the conditions above are equivalent to having determinant 1. this acts on the Siegel upper half space like $SL_{2}(\mathbb{Z})$ acts on $\mathbb{C}$\\
+Particularly, to build our discrete subgroup $\Gamma_{g}(N)$, observe $\mathcal{H}_{g}$ contains a \textbf{symplectic vector space}, $G L_{2 g}(\mathbb{Z})$, which means we can associate $G L_{2 g}(\mathbb{Z})$ with a \textbf{symplectic bilinear form} $\omega:V\times V\rightarrow F$ satisfying
+\begin{list}{•}{•}
+\item $\omega$ is linear in each variable
+\item $\omega(v,v)=0$ $\forall v$
+\item $\omega(u,v)=0$ $\forall v\implies u=0$
+\end{list}
+Note $\omega$ can be represented as a matrix. Usually, $\omega=\left( \begin{array}{cc}{0} & {I_{n}} \\ {-I_{n}} & {0}\end{array}\right)$. We then pick only the matrices $f$ satisfying $f^{*} \rho=\omega$, where we define $f^{*}$ as the \textbf{pullback}, or the matrix which satisfies $\left(f^{*} \rho\right)(u, v)=\rho(f(u), f(v))$. This is the construction of the symplectic group. It is the matrices of a symplectic vector space who, when mapping via $\omega$ from $V$ to $V$, have a pullback which preserves symplectic form ($f^{*} \rho=\omega$). Consequentially, the symplectic group as an action preserves non-degenerate, skew-symmetric, bilinear forms. This is our generalized idea of $SL_{2}(\mathbb{Z}).$ It may also be helpful to note that some people talk about a subset of $\Gamma_{g}(N)$, the fundamental domain, using the same notation.\\
+The different subsets of the modular group of are objects of interest, and it is recommended one consider building an intuition for their matrix forms and uses.
+Take note: the case of $2\times 2$ symmetric bilinear forms are bijective with the binary quadratic forms.\\
+A Siegel modular form maps to $\mathbb{C}^{n}$.
+\subsection{Definition of a Siegel Modular Form}
+First we define $$\rho : \mathrm{GL}_{g}(\mathbb{C}) \rightarrow \mathrm{GL}(\mathbb{C}^{n})$$
+which is a rational representation. This will let us "convert" the symplectic matrix into information in the space of $\mathbb{C}^{n}$. Let $\gamma=\left( \begin{array}{ll}{A} & {B} \\ {C} & {D}\end{array}\right)$ be such that $\gamma\in\Gamma_{g}(N)$. Define $$(f | \gamma)(\tau)=(\rho(C \tau+D))^{-1} f(\gamma \tau)$$ Then $f : \mathcal{H}_{g} \rightarrow \mathbb{C}^{n}$ is a \textbf{Siegel modular form} of degree g, weight $\rho$, and level $N$ if
+\begin{enumerate}
+\item It is holomorphic
+\item $(f | \gamma)=f$ for any $\gamma\in\Gamma_{g}(N)$
+\end{enumerate}
+$(\rho(C \tau+D))^{-1}$ is our factor of automorphy. Observe that this automorphy implies for all Siegel modular forms, $f(z+1)=f(z)$, so Siegel modular forms "expand upon" periodicity in a similar way to modular forms. Additionally, this means they have a Fourier expansion.\\
+It is interesting to note that the Siegel modular forms of fixed weight and degree form a vector space over $\mathbb{C}$.
+\subsection{Fourier Expansions of Siegel Modular Forms}
+Define the notation $$T[U]:= ^{t}UTU$$ We are going to look only at integral actions on the Siegel modular form. Because $f(z)$ is a Siegel modular form, for any $u\in GL_n(\mathbb{Z})$, we have $f(z[u])=\operatorname{det} u^{k} f(z)$, implying the function is periodic on each $z_{kl}$ with period 1. Consequently, we can rephrase each of these $z_{kl}$ as $e^{2\pi i z_{kl}}$. This makes the function holomorphic on a \textbf{Reinhard-domain}, which is the usual domain of convergence for power series. Specifically, these domains are invariant with respect to multiplication of the coordinates by arbitrary complex numbers of modulus one. Then Cauchy's integral formula implies there exists a Laurent expansion of $f$, which is actually a Fourier series: $$f(z)=\sum_{\mathbf{t}} a(t) \mathrm{e}^{2 \pi \mathrm{i} \sigma(t z)}$$. To break this down, \textbf{Cauchy's integral formula} implies that for a $D=\left\{z :\left|z-z_{0}\right| \leq r\right\}$ with $D \subset U \subset \mathbb{C}$, when we have a holomorphic function $f:U\rightarrow \mathbb{C}$, for all points $a$ on the interior of $D$, $$f(a)=\frac{1}{2 \pi i} \oint_{\gamma} \frac{f(z)}{z-a} d z,$$
+where $\gamma$ is a counterclockwise Jordan curve. What this really means for us is that all holomorphic functions are analytic, particularly infinitely differentiable with this relation: $$f^{(n)}(a)=\frac{n !}{2 \pi i} \oint_{\gamma} \frac{f(z)}{(z-a)^{n+1}} d z$$.\\
+One handy aspect of this concept is that the function can be described on a disk using only the line integral of a Jordan curve within the disk. Using the differentiability, one can create a Laurent series, defined as $$f(z)=\sum_{n=-\infty}^{\infty} f^{(n)}(a)(z-c)^{n}$$ This can be converted into the initially shown Fourier series. Since we are multivariable in our work on Siegel modular forms, we must create a Laurent expansion in multiple dimensions. The \textbf{index of the Fourier expansion}, $t$, according to Klingen, is "all half-integral symmetric $n$-rowed matrices. Half-integral means that the diagonal elements $t_k$ and $2t_kl$, $(k\neq 1)$ are integers." So our index is symmetric matrices where the diagonal is represented as half of its actual value. This is very similar in form to the domain. The $2\times 2$ example of this would be binary quadratic forms, matrices S of the form
+\[
+\begin{bmatrix}
+\alpha &	\beta \\
+\beta & \delta
+\end{bmatrix}
+\quad  \gamma \in \mathbb{Z} ,\quad \beta \in \frac{1}{2} \mathbb{Z} ,\quad \alpha > 0
+\]
+The book also notes that in the Fourier expansion, "$\sigma(tz)$ is the most general linear composite of the variables $z_{kl}(k\leq l)$". This is akin to trace.\\
+Given this Fourier expansion, a Fourier coefficient is calculated as $$a(t)=\int_{x \bmod 1} f(z) \mathrm{e}^{-2 \pi i \sigma(t z)} \mathrm{d} x$$
+where $dx$ is a Euclidean volume element. Note we are using $\gamma = x\bmod 1$\\
+An example of Siegel modular forms would be the Siegel Eisenstein series of degree $g$ and even weight $k>2$,
+$$\sum_{C, D} \frac{1}{\operatorname{det}(C Z+D)^{k}}$$
+where $Z\in \mathcal{H}_{g}$ and $C$, $D$ are the bottom half of a member of $\Gamma_g(N)$\\
+If you would like to become more familiar with the intuition, consider reviewing the Fourier series of Eisenstein series via Wikipedia.
+\subsection{Equivalence Classes of Coefficients}
+Given the above Fourier coefficient and the property $f(z[u])=\operatorname{det} u^{k} f(z)$, we can determine that
+$$a(t[u])=\int_{x \bmod 1} f(z) \mathrm{e}^{-2 \pi i \sigma(t[u] z)} \mathrm{d} x$$
+$$=\operatorname{det} u^{k} \int_{x \bmod 1} f(z[^{t}u]) e^{-2 \pi i \sigma\left(t z\left[^{t} u\right]\right)} d x$$
+$$=\operatorname{det} u^{k} a(t)$$
+ 
+Thus we have \textbf{partitioned the coefficients into equivalence classes}. The intuition of the above process is that we have discovered sets of inputs which calculate the same coefficients. This is useful for practical computation, as we only need to compute a single representative from each equivalence class.
+
+\section{Paramodular Forms, Coefficients and Twists}
+\subsection{Siegel Paramodular Forms (Note the "Para")}
+Siegel paramodular forms are a generalization of some Siegel modular forms. We will be considering Siegel paramodular forms of degree n=2. Instead of the symplectic group, we will use the paramodular group of degree 2, defined as a subgroup of $GL_{4}(\mathbb{Q})$ or of $Sp(4,\mathbb{Q})$ which is a symplectic group of level 2, but over the rationals.
+Specifically, we can define the \textbf{paramodular group} as $$\Gamma^{\operatorname{para}}(N)=\mathrm{Sp}(4, \mathbb{Q}) \cap \left[ \begin{array}{cccc}{\mathbb{Z}} & {\mathbb{Z}} & {N^{-1} \mathbb{Z}} & {\mathbb{Z}} \\ {N \mathbb{Z}} & {\mathbb{Z}} & {\mathbb{Z}} & {\mathbb{Z}} \\ {N \mathbb{Z}} & {N \mathbb{Z}} & {\mathbb{Z}} & {N \mathbb{Z}} \\ {N \mathbb{Z}} & {\mathbb{Z}} & {\mathbb{Z}} & {\mathbb{Z}}\end{array}\right]$$
+This is because any non-degenerate, skew-symmetric form is equivalent to a member of the paramodular group by $F=\left( \begin{array}{ll}{1} & {0} \\ {0} & {N}\end{array}\right)$ and scalar multiple, implying the paramodular matrices have the form $$\left[ \begin{array}{cccc}{\mathbb{Z}} & {\mathbb{Z}} & {\mathbb{Z}} & {\mathbb{Z} / N} \\ {\mathbb{Z}} & {\mathbb{Z}} & {\mathbb{Z}} & {\mathbb{Z} / N} \\ {\mathbb{Z}} & {\mathbb{Z}} & {\mathbb{Z}} & {\mathbb{Z} / N} \\ {N \mathbb{Z}} & {N \mathbb{Z}} & {N \mathbb{Z}} & {\mathbb{Z}}\end{array}\right]$$ but we can restrict this into the final form by using the restrictions following from the fact that our matrices are also symplectic.\\
+The paramodular group over the reals is conjugate to the symplectic group, which is interesting to note.\\
+With this distinction made, the rest of our understanding of Siegel modular forms still applies, and we can now discuss the results of Dr. Johnson-Leung's research on coefficients for Fourier expansions of Siegel paramodular forms.
+
+\subsection{Binary Quadratic Forms (The Domain of Siegel Paramodular Forms of Level N)}
+This section aims to explore the properties of the domain for Siegel paramodular forms of level n, the focus of Dr. Johnson-Leung's and Dr. Brooks's research. This domain is $\mathcal{H}_{2}$, or 2-by-2 symmetric matrices of complex values.\\
+We will be slightly rephrasing some of the previously occurring definitions to make them compatible with matrix operations for computational clarity. We will be describing the index (previously denoted $t$) of a Fourier expansion for a Siegel paramodular form as $$S=\left[ \begin{matrix}\alpha & \beta \\ \beta & \gamma \end{matrix}\right], \quad \alpha \in N \mathbb{Z}, \quad \gamma \in \mathbb{Z}, \quad \beta \in \frac{1}{2} \mathbb{Z}, \quad \alpha>0, \quad \operatorname{det} \left[ \begin{matrix} \alpha & \beta \\ \beta & \gamma \end{matrix}\right]=\alpha \gamma-\beta^{2}>0$$
+These are the "half-integral symmetric n-rowed matrices" described by Klingen (see (2.3)), except n=2 and we have restricted to the paramodular group. It is worth noting that this set has an additional condition from traditional binary quadratic forms, particularly that $\alpha\in N\mathbb{Z}$. When the level of a Siegel modular form is 1, this is exactly the binary quadratic forms. Otherwise, it is a subset.
+\\
+Then our Fourier expansion has the following form: $$F(Z)=\sum_{S \in A(N)^{+}} a(S) e^{2 \pi i t \operatorname{c}(S Z)}$$
+
+\subsection{Fourier Coefficients and Equivalences}
+With regards to practically computing Fourier expansions of Siegel paramodular forms, recall from (2.4) that for any $u\in GL_{2}(\mathbb{Z})$, we have $$a(t[u])=\operatorname{det} u^{k} a(t)$$
+Because of this, we observe coefficients are the same when the determinant of the transformation between them $u$ has determinant $1$. Thus, we are interested in partitioning the binary quadratic forms (our inputs for calculating Fourier coefficients), $t$, along their equivalence by transformation with respect to matrices of determinate 1.\\
+This notion of equivalence can be formalized. We will take a detour to summarize the historical activity of this, then tie it in to Siegel modular forms.\\
+Traditional equivalence uses $SL_{2}(\mathbb{Z})$ as a right group action on the set of binary quadratic forms. By this definition, binary quadratic forms $a,b\in A(N)^{+}$ are equivalent if and only if  $\exists q\in SL_{2}(\mathbb{Z})$ such that $^{t}qaq=b$ or $a[q]=b$.\\
+From this, if our Siegel paramodular form is $N=1$, we can rephrase our statement $a(t[u])=\operatorname{det} u^{k} a(t)$ as "two binary quadratic forms produce the same coefficient if they are equivalent." Calculating representatives of equivalences classes under this definition is discussed in the first 30 pages of "Primes of the form $x^2+ny^2$," and is sufficient for the theory of calculating coefficients for Siegel paramodular forms of $N$ 1.\\
+However, for $N \geq 2$, we add the restriction $a\in N\mathbb{Z}$ for $S=\left[ \begin{matrix}\alpha & \beta \\ \beta & \gamma \end{matrix}\right]\in A(N)^{+}$, and some of our previous equivalences vanish. Consequently, we have more equivalence classes now. We must redefine equivalence for this case. Here, we eliminate transformations from $SL_{2}(\mathbb{Z})$ which do not preserve the case that $a\in N\mathbb{Z}$. We claim that we can partition the binary quadratic forms with this new equivalence by using a new set, defined as $\Gamma_{0}(N) = \left \{\left[ \begin{matrix}a & b \\ c & d \end{matrix}\right]\in SL_{2}(\mathbb{Z})\vert c\bmod N = 0\right \}$, a subset of $SL_{2}(\mathbb{Z})$. We call $\Gamma_{0}(N)$ a congruence subgroup (particularly the Hecke congruence subgroup). Notably, $\Gamma_{0}(N)$  further partitions each equivalence classes from $SL_{2}(\mathbb{Z})$ via cosets, so we can use our $SL_{2}(\mathbb{Z})$ equivalence classes and a mapping to these finer partitions to fully explain our equivalences among coefficients for any Siegel paramodular form. Particularly, we can claim $$\left[SL_{2}(\mathbb{Z}) : \Gamma_{0}(N)\right]=N \cdot \prod_{p | N}\left(1+\frac{1}{p}\right)$$ \\
+A word of warning that many sources refer to $SL_{2}(\mathbb{Z})$ as  $\Gamma$.\\
+Our current research centers around defining the mapping from $SL_{2}(\mathbb{Z})$ equivalence classes to their partitions via $\Gamma_{0}(N)$. This process has been done by others, as can be seen in sample coefficients of Siegel paramodular forms in the given sources (LMFDB or Yuen). These sources use a binary quadratic form to represent each of the $SL_{2}(\mathbb{Z})$ equivalence classes. Then, they construct matrices to map the previously-mentioned binary quadratic form to its $\Gamma_{0}(N)$ "sub-representatives", which fully defines the partitions of binary quadratic forms with respect to $\Gamma_{0}(N)$\\
+The current methodology for creating such a mapping involves mapping from each equivalence class of $SL_{2}(\mathbb{Z})$ to $\mathbb{P}(\mathbb{Z}/N\mathbb{Z})$, called the projective linear plane, a convenient representation which is isomorphic to representatives of the new $\Gamma_{0}(N)$ equivalence.\\
+This topic will be discussed further in the "Active Research" section.
+
+\subsection{Twists of Siegel Paramodular Forms}
+The paper "FOURIER COEFFICIENTS FOR TWISTS OF SIEGEL PARAMODULAR FORMS (EXPANDED VERSION" declares that for a given Siegel paramodular form, 
+
+$$F(Z)=\sum_{S \in A(N)^{+}} a(S) e^{2 \pi i \operatorname{tr}(S Z)}$$
+
+that one can create a Fourier expansion for a new Siegel paramodular form, defined as follows:
+
+$$\mathcal{T}_{\chi}(F)(Z)=\sum_{S \in A\left(N p^{4}\right)^{+}} W(\chi) a_{\chi}(S) e^{2 \pi i \operatorname{tr}(S Z)}$$
+
+This has a few components which will need to be defined. The one which is not of interest for our research, $W(\chi)$, is defined as follows: $W$ is the Gauss sum, and $\chi$ is the "nontrivial quadratic dirichlet character of conductor p," or the legendre $(\frac{*}{p})$.\\
+
+More relevant to us is the value $a_{\chi}(S)$, which calculates the new coefficient from the old coefficient. Its definition is massive and also the focus of this project. Here is an example of the first and simplest case of the definition:
+
+\begin{align*}
+a_\chi (S)=p^{1-k}\chi(2\beta)\sum_{b\in (\mathbb{Z}/p\mathbb{Z})}\chi(b)a(S[
+\begin{bmatrix}
+1 &	-bp^{-1} \\
+0 & p
+\end{bmatrix}
+])
+\\
+\text{where $a_\chi (S)$ with $S$=}
+\begin{bmatrix}
+\alpha &	\beta \\
+\beta & \gamma
+\end{bmatrix}
+\text{ and } p\nmid 2\beta \text{ and } p^4\vert \alpha
+\end{align*}
+
+since $\chi(b),\chi(2\beta)$ can be explicitly and simply calculated, we look at the remaining object of interest in case 1 (particularly the inverse, for reasons which will be explained): 
+\begin{align*}
+(S'[
+\begin{bmatrix}
+1 &	-bp^{-1} \\
+0 & p
+\end{bmatrix}
+]^{-1})
+= 
+\begin{bmatrix}
+x &	(bx +py)/p^2 \\
+(bx+py)/p^2 & (b^2x+2bpy+p^2z)/p^4
+\end{bmatrix}
+ = S
+\\
+\text{for } S=
+\begin{bmatrix}
+x &	y \\
+y & z
+\end{bmatrix}
+])
+\end{align*}
+
+Since our goal is to take existing coefficients for Siegel paramodular forms and convert them into coefficients for the twist of that form, we are interested to know for which binary quadratic forms $S$ does the resulting $S'$ have integer values. Particularly, we must make sure the above matrix math has a solution $S'$ for a given S such that $S'$ is also a binary quadratic form. Otherwise, this formula cannot be used.\\
+Defining the conditions under which known coefficients will twist into new coefficients is one of the primary focuses of this research project. Another is creating and implementing an algorithm which converts sets of known coefficients into their twist.
+
+\section{Active Research on Calculating Coefficients of Twists}
+\subsection{Calculating Equivalence Classes of Binary Quadratic Forms}
+The following section attempts to describe properties of $P^1(\mathbb{Z}/ n \mathbb{Z})$.\\
+First, let 
+$$P(\mathbb{Z} / N \mathbb{Z}) :=\left\{(a, b) \in(\mathbb{Z} / N \mathbb{Z})^{2} : \exists c, d \in \mathbb{Z} / N \mathbb{Z} \text { such that } a d-b c=1\right\}$$
+We will define $(\mathbb{Z} / N \mathbb{Z})^{\times}$, the set of units, to act on $P(\mathbb{Z} / N \mathbb{Z})$ via $\lambda(x.y)\rightarrow (\lambda x, \lambda y)$. We can then finally define
+$$\mathbb{P}^{1}(\mathbb{Z} / N \mathbb{Z}) :=P(\mathbb{Z} / N \mathbb{Z}) / \sim$$
+If we can pick representatives for each of the equivalence classes of $P^1(\mathbb{Z}/ n \mathbb{Z})$, these can be mapped to matrix representatives for the cosets of $\Gamma_0(N)$ in $SL_2(\mathbb{Z})$. It can be shown that each of the following properties reveals some amount of the necessary quantity of representatives, but there remains a few cases to be described, thus the last few equivalence relations may have to be brute forced in a situation of computational desparosity.\\
+Particularly, we aim to determine $$N \cdot \prod_{p | N}\left(1+\frac{1}{p}\right)$$ equivalence classes of $P^1(\mathbb{Z}/ n \mathbb{Z})$.
+\subsubsection{Properties of $P^1(\mathbb{Z}/ n \mathbb{Z})$}
+\begin{enumerate}
+\item $(0,1)$ is a representative (Particularly, it does not relate to any of the following described representatives).
+\item $([a],1)\sim ([b],1) \iff [a] \equiv [b]$. This combined with the previous generates $N$ representatives, thus $N$ equivalence classes.
+\item $[a]^{-1} = [b]$ or $[b]^{-1}=[a] \implies ([a],1)\sim (1,[b])$ We can use this to determine when $([a],1)\not\sim (1,[b])$, generating new representatives of the form $(1,[b])$ for any $[b]$ not invertible, which has a quantity of $N-\phi(N)$ new equivalence classes.
+\item $([a],[b]) \not\sim  ([x], 1)$ for some $[x]\in\mathbb{Z}/n \mathbb{Z} \iff [b]$ is not invertible. Using this, $([a],[b])$ is part of an as-yet undeclared equivalence class whenever $[a]$ and $[b]$ are both non-units.
+\item For non-units $[a],[b],[c],[d]$, we have $([a],[b])\sim([c],[d])$ whenever there exists a unit $\lambda$ such that $\lambda[a]=[c]$ and $\lambda[b]=[d]$. So we are interested in, given $\phi(N)$ values of $\lambda$, how many pairs $[a],[c]$ and $[b],[d]$ exist for each $\lambda_i$ such that $\lambda[a]=[c]$ and $\lambda[b]=[d]$.
+\item Finally, again for non-units $[a],[b]$, we have $([a],[b])\sim ([b],[a])$ whenever $[b]=\lambda [a]$ and $[a]=\lambda [b]$. It remains to count these or algorithmically describe them. $\lambda^2[a]=[a]$ and $\lambda^2 [b] =b$, so $\lambda^2$. Then we square our first claims, giving $[b]^2=\lambda^2[a]^2$ and $[a]^2=\lambda^2[b]^2$. But because $\lambda^2[a]=[a]$ and $\lambda^2 [b] =b$, it follows $[a]^2=[b]^2$, which is our final condition.
+\end{enumerate}
+\subsubsection{Converting members of $P^1(\mathbb{Z}/ n \mathbb{Z})$ into cosets of $\Gamma_0(N)$ in $SL_2(\mathbb{Z})$}
+Now that we have a set of values $([a],[b])$ which are bijective with representatives of cosets of $\Gamma_0(N)$ in $SL_2(\mathbb{Z})$, we want to describe the bijection to these representatives. This bijection is as follows:\\
+Given $([a],[b])$, we define our matrix \[T=\left[\begin{matrix}
+a & b\\
+c & d
+\end{matrix}\right]
+\] such that $ad-bc=1$. Then one can simply solve the extended Euclidean algorithm for $c,d$ in order to find a distinguished representative of the coset. Then for each binary quadratic form $U$ representing an equivalence class under $SL_2(\mathbb{Z})$ and for each $T$ described above, we have $U[T]$ is a representative for an equivalence class under $\Gamma_0(N)$.
+This is exactly all the representatives for equivalence of binary quadratic forms under $\Gamma_0(N)$.
+\subsection{Determining When Twists Will Produce a Valid Coefficient}
+\subsubsection{Introduction to the topic}
+Given the last section, we now know how to find binary quadratic forms which we are interested in twisting. However, we do not know that the twist will produce a sensible, integer-valued binary quadratic form. In fact, this is often not the case. Thus, we aim to identify exactly the equivalence classes of coefficients which will produce sensible, nonzero twist coefficients. The following proofs describe some of the properties of such equivalence classes. In fact, I believe with slight extensions, the following properties describe exactly the sensible coefficients.
+\subsubsection{Relevant Proofs}
+Claim:
+\\
+Let $S$ be a binary quadratic form such that $S=
+\begin{bmatrix}
+x &	y \\
+y & z
+\end{bmatrix}$ with discriminant $D$ 
+\\
+such that $p^4\vert x$ and $p\nmid 2(bx+py)/p^2$, $S'=(S[
+\begin{bmatrix}
+1 &	-bp^{-1} \\
+0 & p
+\end{bmatrix}
+]^{-1})=\begin{bmatrix}
+x &	(bx +py)/p^2 \\
+(bx+py)/p^2 & (b^2x+2bpy+p^2z)/p^4
+\end{bmatrix}$. Then $S'$ is integer-valued $\implies$ $p^2\vert\vert D$ and $p\nmid z$
+\\
+Proof:
+\\
+Assume $S'$ is integer-valued. There are three parts to this proof: proving $p\vert\vert y$, proving $ p\nmid z$, and then proving from these and that $p^4\vert x$ that it follows $p^2\vert\vert D$. First, since $S'$ is integer-valued, $p^2\vert (bx+py)$. Since $p^4\vert x$, we say $x=qp^4$. Then $p^2\vert bqp^4+py$, so $p\vert bqp^3+y$. It follows that $p\vert y$. Next, since $p\nmid \beta=2((bx+py)/p^2)$, it follows by the same logic as above (since $p>2$) that $p\nmid y/p$, and then $p\vert y \implies p\vert\vert y$.
+\\
+Next, we show $p\nmid z$. Since $p^4\vert (b^2x+2bpy+p^2z)$, we substitute $x=qp^4$ and $y=rp$. Then $p^4\vert (b^2qp^4+2bp^2r+p^2z) \implies p^2\vert b^2qp^2+2br+z$.  Then, this implies $p^2\vert 2br+z$. but since $p\nmid b, 2, r$, this can only be true if $p\nmid z$.
+\\
+Finally, we use these conditions on $D=(2y)^2-4xz$. Since $p\vert y$ and $p^4\vert x$, we have $p^2\vert (2y)^2-4xz$. But $p^2\vert\vert (2y)^2$, so it follows $p^2\vert\vert D$ \qed
+\\
+\\
+Claim:
+\\
+Let $S$ be a binary quadratic form such that $S=
+\begin{bmatrix}
+x &	y \\
+y & z
+\end{bmatrix}$ with discriminant $D$ such that $p^4\vert x$, $p\vert \vert y$, and $p\nmid z$. Then there exists a binary quadratic form $\begin{bmatrix}
+x' & y' \\
+y' & z'
+\end{bmatrix}$ with discriminant $D$ such that $p\vert \vert y'$, $p\nmid z'$, and $x'=p^n$ for some $n\in \mathbb{N}$.
+\\
+Proof:
+\\
+Suppose we have a binary quadratic form $S=
+\begin{bmatrix}
+x &	y \\
+y & z
+\end{bmatrix}$ with discriminant $D$ such that $p^4\vert x$, $p\vert \vert y$, and $p\nmid z$. Then $D=y^2-4xz$. If $x=p^n$, we are done. Otherwise, let $x=p^n*c$, where $p^n\vert \vert x$. Then $D=y^2-4p^ncz$. Now let $y'=y$, $x'=p^n$, and $z'=cz$. Then we have $p\vert \vert y'$, $p\nmid z'$, and $x'=p^n$, as desired. \qed
+\subsection{Implementing the Twist on Coefficients (Collection of Algorithms)}
+
+\section{Index of Terms}
+\section{Collection of Interesting References}
+\subsection{Books}
+For context on prerequisite materials:
+\begin{list}{}{}
+\item A Friendly Introduction to Analysis
+\begin{list}{}{}
+	\item This will familiarize yourself with the intuition of the analytical approach expanded upon in Complex Analysis.
+\end{list}
+\item Complex Analysis
+\begin{list}{}{}
+	\item This is critical for understanding how Siegel modular forms are constructed. It will help build strong intuitive understanding of the processes at work.
+\end{list}
+\item Contemporary Abstract Algebra
+\begin{list}{}{}
+	\item Skimming this book up to the point you become familiar with notation $(\mathbb{Z}/N\mathbb{Z})*$, requiring experience including groups and normal subgroups then rings and their units.
+\end{list}
+\item Primes of the Form $x^2+ny^2$
+\begin{list}{}{}
+	\item This is a very intense approach to a very big problem, and should be approached cautiously. Even the first 30 pages contain very valuable information particularly in the case of Siegel paramodular forms (via binary quadratic forms since n=2). Reading that far is recommended, but the rest of the material is dense and of limited use for our purposes.
+\end{list}
+\end{list}
+\subsection{Online}
+\begin{list}{}{}
+\item \href{lmfdb.org}{A collection of mathematical objects including Siegel modular forms}
+\item \href{http://siegelmodularforms.org/}{Another source of Siegel modular forms}
+\item \href{https://icerm.brown.edu/materials/Slides/sp-f15-w1/Tables_of_paramodular_eigenforms_]_Cris_Poor,_Fordham_University.pdf}{An interesting talk on the motivation behind Siegel modular forms and construction of them from Fourier series}
+
+\end{list}
+\end{document}  

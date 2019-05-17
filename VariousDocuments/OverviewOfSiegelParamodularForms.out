@@ -1,0 +1,29 @@
+\BOOKMARK [1][-]{section.1}{1. Helpful Preparatory Topics}{}% 1
+\BOOKMARK [1][-]{section.2}{2. Prerequisite Discussion}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{2.1. Abstract Algebra and Group Actions}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{2.2. Lie Groups}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{2.3. Complex Analysis Overview}{section.2}% 5
+\BOOKMARK [1][-]{section.3}{3. Motivation and Intuition for Modular Forms}{}% 6
+\BOOKMARK [1][-]{section.4}{4. A Brief Description of Modular Curves}{}% 7
+\BOOKMARK [1][-]{section.5}{5. Elliptic Functions and Lattices}{}% 8
+\BOOKMARK [1][-]{section.6}{6. Automorphic Forms, Particularly The Modular Ones}{}% 9
+\BOOKMARK [2][-]{subsection.6.1}{6.1. Constructing Modular Forms}{section.6}% 10
+\BOOKMARK [2][-]{subsection.6.2}{6.2. Computational Example}{section.6}% 11
+\BOOKMARK [1][-]{section.7}{7. Siegel Modular Forms}{}% 12
+\BOOKMARK [2][-]{subsection.7.1}{7.1. Domain and Group Action}{section.7}% 13
+\BOOKMARK [2][-]{subsection.7.2}{7.2. Definition of a Siegel Modular Form}{section.7}% 14
+\BOOKMARK [2][-]{subsection.7.3}{7.3. Fourier Expansions of Siegel Modular Forms}{section.7}% 15
+\BOOKMARK [2][-]{subsection.7.4}{7.4. Equivalence Classes of Coefficients}{section.7}% 16
+\BOOKMARK [1][-]{section.8}{8. Paramodular Forms, Coefficients and Twists}{}% 17
+\BOOKMARK [2][-]{subsection.8.1}{8.1. Siegel Paramodular Forms \(Note the "Para"\)}{section.8}% 18
+\BOOKMARK [2][-]{subsection.8.2}{8.2. Binary Quadratic Forms \(The Domain of Siegel Paramodular Forms of Level N\)}{section.8}% 19
+\BOOKMARK [2][-]{subsection.8.3}{8.3. Fourier Coefficients and Equivalences}{section.8}% 20
+\BOOKMARK [2][-]{subsection.8.4}{8.4. Twists of Siegel Paramodular Forms}{section.8}% 21
+\BOOKMARK [1][-]{section.9}{9. Active Research on Calculating Coefficients of Twists}{}% 22
+\BOOKMARK [2][-]{subsection.9.1}{9.1. Calculating Equivalence Classes of Binary Quadratic Forms}{section.9}% 23
+\BOOKMARK [2][-]{subsection.9.2}{9.2. Determining When Twists Will Produce a Valid Coefficient}{section.9}% 24
+\BOOKMARK [2][-]{subsection.9.3}{9.3. Implementing the Twist on Coefficients \(Collection of Algorithms\)}{section.9}% 25
+\BOOKMARK [1][-]{section.10}{10. Index of Terms}{}% 26
+\BOOKMARK [1][-]{section.11}{11. Collection of Interesting References}{}% 27
+\BOOKMARK [2][-]{subsection.11.1}{11.1. Books}{section.11}% 28
+\BOOKMARK [2][-]{subsection.11.2}{11.2. Online}{section.11}% 29

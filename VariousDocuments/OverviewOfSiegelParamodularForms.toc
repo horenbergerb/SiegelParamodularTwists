@@ -1,0 +1,33 @@
+\contentsline {section}{\tocsection {}{1}{Helpful Preparatory Topics}}{1}{section.1}
+\contentsline {section}{\tocsection {}{2}{Prerequisite Discussion}}{2}{section.2}
+\contentsline {subsection}{\tocsubsection {}{2.1}{Abstract Algebra and Group Actions}}{2}{subsection.2.1}
+\contentsline {subsection}{\tocsubsection {}{2.2}{Lie Groups}}{3}{subsection.2.2}
+\contentsline {subsection}{\tocsubsection {}{2.3}{Complex Analysis Overview}}{3}{subsection.2.3}
+\contentsline {section}{\tocsection {}{3}{Motivation and Intuition for Modular Forms}}{4}{section.3}
+\contentsline {section}{\tocsection {}{4}{A Brief Description of Modular Curves}}{5}{section.4}
+\contentsline {section}{\tocsection {}{5}{Elliptic Functions and Lattices}}{5}{section.5}
+\contentsline {section}{\tocsection {}{6}{Automorphic Forms, Particularly The Modular Ones}}{5}{section.6}
+\contentsline {subsection}{\tocsubsection {}{6.1}{Constructing Modular Forms}}{7}{subsection.6.1}
+\contentsline {subsection}{\tocsubsection {}{6.2}{Computational Example}}{7}{subsection.6.2}
+\contentsline {section}{\tocsection {}{7}{Siegel Modular Forms}}{7}{section.7}
+\contentsline {subsection}{\tocsubsection {}{7.1}{Domain and Group Action}}{7}{subsection.7.1}
+\contentsline {subsection}{\tocsubsection {}{7.2}{Definition of a Siegel Modular Form}}{8}{subsection.7.2}
+\contentsline {subsection}{\tocsubsection {}{7.3}{Fourier Expansions of Siegel Modular Forms}}{8}{subsection.7.3}
+\contentsline {subsection}{\tocsubsection {}{7.4}{Equivalence Classes of Coefficients}}{10}{subsection.7.4}
+\contentsline {section}{\tocsection {}{8}{Paramodular Forms, Coefficients and Twists}}{10}{section.8}
+\contentsline {subsection}{\tocsubsection {}{8.1}{Siegel Paramodular Forms (Note the "Para")}}{10}{subsection.8.1}
+\contentsline {subsection}{\tocsubsection {}{8.2}{Binary Quadratic Forms (The Domain of Siegel Paramodular Forms of Level N)}}{11}{subsection.8.2}
+\contentsline {subsection}{\tocsubsection {}{8.3}{Fourier Coefficients and Equivalences}}{11}{subsection.8.3}
+\contentsline {subsection}{\tocsubsection {}{8.4}{Twists of Siegel Paramodular Forms}}{12}{subsection.8.4}
+\contentsline {section}{\tocsection {}{9}{Active Research on Calculating Coefficients of Twists}}{13}{section.9}
+\contentsline {subsection}{\tocsubsection {}{9.1}{Calculating Equivalence Classes of Binary Quadratic Forms}}{13}{subsection.9.1}
+\contentsline {subsubsection}{\tocsubsubsection {}{9.1.1}{Properties of $P^1(\mathbb {Z}/ n \mathbb {Z})$}}{14}{subsubsection.9.1.1}
+\contentsline {subsubsection}{\tocsubsubsection {}{9.1.2}{Converting members of $P^1(\mathbb {Z}/ n \mathbb {Z})$ into cosets of $\Gamma _0(N)$ in $SL_2(\mathbb {Z})$}}{14}{subsubsection.9.1.2}
+\contentsline {subsection}{\tocsubsection {}{9.2}{Determining When Twists Will Produce a Valid Coefficient}}{14}{subsection.9.2}
+\contentsline {subsubsection}{\tocsubsubsection {}{9.2.1}{Introduction to the topic}}{14}{subsubsection.9.2.1}
+\contentsline {subsubsection}{\tocsubsubsection {}{9.2.2}{Relevant Proofs}}{15}{subsubsection.9.2.2}
+\contentsline {subsection}{\tocsubsection {}{9.3}{Implementing the Twist on Coefficients (Collection of Algorithms)}}{15}{subsection.9.3}
+\contentsline {section}{\tocsection {}{10}{Index of Terms}}{15}{section.10}
+\contentsline {section}{\tocsection {}{11}{Collection of Interesting References}}{15}{section.11}
+\contentsline {subsection}{\tocsubsection {}{11.1}{Books}}{15}{subsection.11.1}
+\contentsline {subsection}{\tocsubsection {}{11.2}{Online}}{16}{subsection.11.2}

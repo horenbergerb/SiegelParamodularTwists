@@ -1,0 +1,146 @@
+\documentclass[11pt]{beamer}
+\usetheme{Warsaw}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\author{Beau Horenberger and Kirk Bonney}
+\title{Calculating Coefficients for Fourier Expansions of Siegel Modular Forms}
+%\setbeamercovered{transparent} 
+%\setbeamertemplate{navigation symbols}{} 
+%\logo{} 
+\institute{University of Idaho} 
+%\date{} 
+%\subject{} 
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Plan of Attack}
+\tableofcontents
+\end{frame}
+
+\section{Modular Forms}
+\subsection{Modular Forms and Periodicity}
+\begin{frame}{•}
+\frametitle{Modular Forms}
+\begin{itemize}
+\item Generalize periodicity $f(x+kp)=f(x)$, where $p$ is the period, $k\in \mathbb{R}$
+\item \textbf{Modular forms} are functions on complex numbers with a positive imaginary part. 
+\item $\forall z \in H$ and for all matrices in $SL(2, \mathbb{Z})$, modular forms satisfy,
+	$$f\left( \frac{\alpha z + \beta}{\gamma z + \delta} \right) = (cz+d)^k f(z)$$
+\item A convenient consequence: the periodicity allows for Fourier Expansions!
+\end{itemize}
+\end{frame}
+
+\begin{frame}{•}
+\frametitle{Fourier Expansions for Modular Forms}
+\begin{itemize}
+\item What does a Fourier expansion look like? $$f(\tau) = \sum_{n=0}c(n)e^{2\pi i n \tau}$$
+\item This is just sine and cosine waves added together
+\item Our object of interest is $c(n)$.
+\begin{itemize}
+\item They reveal a lot about how $f(\tau)$ "looks"
+\item We have lots of these documented on websites like LMFDB
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\subsection{Generalizing Modular Forms}
+\begin{frame}{•}
+\frametitle{Generalizing Modular Forms}
+\begin{itemize}
+\item \textbf{Siegel modular forms} are functions on complex symmetric matrices with positive imaginary parts
+\item It also satisfies some behavior, but where modular forms are periodic on a subset of $SL(2, \mathbb{Z})$, Siegel modular forms are periodic on a subset of the \textbf{symplectic group}:
+\end{itemize}
+$\Gamma_{g}(N)=\left\{\gamma \in G L_{2 g}(\mathbb{Z}) | \gamma^{\mathrm{T}} \left( \begin{array}{cc}{0} & {I_{g}} \\ {-I_{g}} & {0}\end{array}\right) \gamma=\left( \begin{array}{cc}{0} & {I_{g}} \\ {-I_{g}} & {0}\end{array}\right), \gamma \equiv I_{2 g} \quad \bmod N\right\}$
+\begin{itemize}
+\item We call $g$ the \textbf{genus}
+\item This sets us up to describe periodicity on Siegel modular forms
+\end{itemize}
+\end{frame}
+
+\section{Siegel Modular Forms and their Coefficients}
+\subsection{Properties of Siegel Modular Forms}
+\begin{frame}
+\frametitle{Convenient transition}
+\begin{itemize}
+\item Our work focuses on Siegel paramodular forms
+\begin{itemize}
+\item This just means a Siegel modular form of genus 2.
+\end{itemize}
+\item Since we have periodicity on some subset of $\Gamma_{g}(N)$ (trust us, we do), we have a Fourier expansion for our Siegel paramodular forms
+\item And now, we are interested in learning about these expansions and their Fourier coefficients
+\end{itemize}
+\end{frame}
+
+\subsection{Binary Quadratic Forms and Fourier Expansions}
+\begin{frame}
+\frametitle{Coefficients and Binary Quadratic Forms}
+\begin{itemize}
+\item Our new Fourier expansion looks like: $$F(Z) = \sum_{S\in A(N)^+}a(S)e^{2\pi itr(SZ)}$$
+\item Our coefficients, $a(S)$, are a different this time: they're indexed on $\left( \begin{array}{cc}{a} & {b} \\ {b} & {d}\end{array}\right) \in A(N)^+$, matrices where \\ $N\vert a$, $b\in \frac{1}{2}\mathbb{Z}$, $a > 0$, and $ac-b^2 > 0$
+\item It is common to think of these as \textbf{binary quadratic forms}, equations of the form $ax^2+bxy+cy^2$
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Calculating New Coefficients}
+\begin{itemize}
+\item We have: sets of coefficients $a(n)$ and their respective indexes $\left( \begin{array}{cc}{a} & {b} \\ {b} & {d}\end{array}\right)\in A(N)^+$
+\item We have: five formulas which produce new coefficients for subsets of our current coefficients. Example 1: $$a_{\chi}(S)=p^{1-k} \chi(2 \beta) \sum_{b \in(\mathbb{Z} / p \mathbb{Z})^{ \times}} \chi(b) a\left( S[\left[ \begin{array}{cc}{1} & {-b p^{-1}} \\ {} & {p}\end{array}\right]]\right)$$
+\end{itemize}
+\end{frame}
+
+\section{Our Work}
+\subsection{Divisibility and Binary Quadratic Forms}
+\begin{frame}
+\frametitle{Determining Which Coefficients Have Solutions}
+\begin{itemize}
+\item There are many matrix operations occurring here
+\item We know our matrices have integer values
+\item It turned out a minority of observed samples have solutions for our example!
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{An Example Claim}
+Claim:
+\\
+Let $S$ be a binary quadratic form such that $S=
+\begin{bmatrix}
+x &	y \\
+y & z
+\end{bmatrix}$ with discriminant $D$ 
+such that $p^4\vert x$ and $p\nmid 2(bx+py)/p^2$, $$S'=(S[
+\begin{bmatrix}
+1 &	-bp^{-1} \\
+0 & p
+\end{bmatrix}
+]^{-1})=\begin{bmatrix}
+x &	(bx +py)/p^2 \\
+(bx+py)/p^2 & (b^2x+2bpy+p^2z)/p^4
+\end{bmatrix}$$. Then $S'$ is integer-valued $\implies$ $p^2\vert\vert D$ and $p\nmid z$
+
+\end{frame}
+
+\subsection{Equivalence and Higher Levels}
+\begin{frame}
+\frametitle{Equivalence and Generally Making Things Harder}
+\begin{itemize}
+\item Not all Siegel modular forms are so easy!
+\item Once we know which coefficients map to new coefficients, we must also be sure they are unique
+\item This depends on the \textbf{level} of the Siegel modular form, but the problem is analogous to the number theory problem of equivalence of binary quadratic forms
+\item For more information, see David Cox's "Primes of the form $x^2+ny^2$"
+\end{itemize}
+\end{frame}
+
+\section{Conclusion}
+\begin{frame}
+\frametitle{Thanks for your patience!}
+Thank you for your time! We hope you enjoyed!
+\end{frame}
+
+\end{document}
