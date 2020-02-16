@@ -7,10 +7,19 @@ Created on Sat Feb 15 19:06:48 2020
 """
 
 #TO DO:
-#add level to SPMF so p doesn't divide N
-#be more rigorous about setting weight
-#ensure general matrices are multiplying properly
+#test the SPMF and BQF functions rigorously
+#use LMFDB JSON file
+#maybe crunch some actual coefficients
+
+#finish spmf stuff
+    #add level to SPMF so p doesn't divide N
+    #be more rigorous about setting weight
+#ensure all matrices are multiplying properly
 #be better about edge cases. I throw exceptions at points that need to be fleshed out
+#throw exceptions when bqfs or matrices have non-integer values
+
+#BIG: talk to kirk about wiring this into his coefficient calculating code
+
 
 #returns gcd of a, b
 def gcd(a, b):
@@ -41,7 +50,8 @@ def legendre(a, p):
 
 #a siegel paramodular form is modeled here
 #as a collection of bqfs and their associated coefficients
-#and we sort these by discriminant
+#the list of BQFs and coeffs is not sorted
+#but there are seach functions for getting what you need out of them
 class SPMF:
     def __init__(self, weight = None):
         #[[BQF1, coeff1], [BQF2, coeff2], ...]
@@ -59,24 +69,29 @@ class SPMF:
             for cur_BQF in data["Fourier_coefficients"][disc]:
                 cleaned_BQF = BQF.strip('()').replace(" ", "")
                 self.add_coeff(BQF(int(cleaned_BQF.split()[0]), int(cleaned_BQF.split()[1]), int(cleaned_BQF.split()[2])), int(data["Fourier_coefficients"][disc][cur_BQF]))
-                
+    
+    #should have a better sol'n than raising error on duplicates            
     def add_coeff(self, BQF, coeff):
         if any(x[0].equals(BQF) for x in self.coeffs):
             raise Exception("Same BQF added to SPMF twice")
         self.coeffs.append([BQF, coeff])
     
+    #search function by discriminant
     def get_by_disc(self, disc):
         return [x for x in self.coeffs if x.discriminant()==disc]
     
+    #gets a list of discriminants
     def get_all_discs(self):
         return set(x[0].discriminant() for x in self.coeffs)
     
+    #finds a particular bqf and coeff matching a given bqf
     def get_by_BQF(self, BQF):
         for x in coeffs:
             if x[0].same_coefficients(BQF):
                 return x
         return None
     
+    #parses all the bqfs and coeffs into an LMFDB-style dict. Ready to be dumped to JSON
     def get_coeff_dict(self):
         discs = self.get_all_discs()
         output = dict()
@@ -86,14 +101,15 @@ class SPMF:
                 output[disc]["({}, {}, {})".format(coeff[0].a, coeff[0].b, coeff[0].c)] = coeff[1]
         return output
         
-    
+    #twist described in case 1 of Dr. Jennifer Johnson-Leung's paper
     def twist_case_1(p, level):
-        #need to implement level for this check:
-        #if not divides(p, self.N)
+        #need to implement level of SPMFs for this check:
+        #if divides(p, self.N):
+            #raise Exception("p cannot divide N")
         
-        #note: our dirichlet character is the legendre mod p
+        #note: dirichlet character is the legendre mod p
         
-        #does new SPMF have the same weight?
+        #does new SPMF have the same weight? I think it does
         new_SPMF = SPMF(weight=self.weight)
         
         for cur_BQF in self.coeffs:
@@ -113,7 +129,7 @@ class SPMF:
                 #notice we left out p**-1
                 new_transform = Matrix(1, -1*beta, 0, p)
                 #sum term 2 is the A^tSA process
-                sum_term_2 = new_transform.mult(cur_BQF[0])
+                sum_term_2 = cur_BQF[0].transform(new_transform)
                 #checking divis conditions (see 9.2.2 in Overview of Siegel Paramodular Forms)
                 if not (divides(p**2, sum_term_2.b) and divides(p**4, sum_term_2.c)):
                     raise Exception("twist case 1 did not have sufficient divisibility wrt p")
@@ -134,6 +150,7 @@ class SPMF:
             
         return new_SPMF
 
+#models a bqf and the things you'd want to do with it
 class BQF:
     def __init__(self, a: int, b: int, c: int):
         self.a = a
@@ -141,12 +158,15 @@ class BQF:
         self.c = c
         self.disc = self.b**2-(4*self.a*self.c)
 
+    #aesthetic function
     def print_bqf(self):
         print("{}x^2 + {}xy + {}y^2".format(self.a, self.b, self.c))
         
+    #plugs in two values and calculates output
     def evaluate(self, x: int, y: int):
         return self.a*x**2 + self.b*x*y + self.c*y**2
 
+    #transforms by a matrix
     def transform(self, matrix, in_place = False):
         if in_place:
             new_bqf = matrix.mult(self)
@@ -157,18 +177,22 @@ class BQF:
             return
         return matrix.mult(self)
     
+    #shows you the discriminant
     def discriminant(self):
         return self.disc
 
     #WARNING: NOT PROPER EQUIVALENCE
+    #compares two bqfs to see if a1==a2, b1==b2, c1==c2
     def same_coefficients(self, bqf):
         if self.a == bqf.a and self.b == bqf.b and self.c == bqf.c:
             return True
         return False
     
+    #boolean check if primitive
     def is_primitive(self):
         return self.same_coefficients(self.get_primitive_form())
     
+    #returns equivalent primitive form
     def get_primitive_form(self):
         ab_gcd = gcd(self.a,self.b)
         bc_gcd = gcd(self.b,self.c)
@@ -179,9 +203,11 @@ class BQF:
             return self
         
     #positive definite bqfs only represent either positive or negative integers
+    #this returns boolean. true if bqf is positive definite
     def is_pos_def(self):
         return self.discriminant() < 0
         
+    #checks if the bqf is reduced
     def is_reduced(self):
         if not self.is_primitive():
             return False
@@ -192,6 +218,7 @@ class BQF:
 
         return False
 
+    #actually reduces the bqf in place
     def reduce(self):
         
         if not self.is_pos_def():
